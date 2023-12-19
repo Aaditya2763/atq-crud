@@ -12,27 +12,27 @@ const PostBox = () => {
 
   return (
     <Fragment>
-      <Container className="d-flex flex-row justify-content-between mt-3 mb-3 position-relative">
+      <Container className="box" >
         <Card2 descStyle={{fontFamily: 'IBM Plex Sans', fontSize: '19px', fontStyle: 'normal', fontWeight: 400,color:"#5C5C5C", width:"100%", height:"auto", overflow:'hidden'}}
         headingStyle={{fontFamily: 'IBM Plex Sans', fontSize: '22px', fontStyle: 'normal', fontWeight: 600,lineHeight:"30px",width:"100%", height:"auto", overflow:'hidden'}} />
-        <div className="border rounded mt-4" style={{ width: '30%', height: '415px', border: '1px solid red' }}>
+        <div className="comment border" style={{height:"350px"}} >
             <p className="heading" style={{fontSize:20}}> All Comments</p>
-           <div className='commentContainer' style={{width:"100%",height:320}}>
-            <div className='  p-1' style={{width:"100%",height:'auto'}}>
+           <div className='commentContainer' style={{width:"100%",height:"300px"}}>
+            <div className='chat' style={{width:"100%",height:'auto'}}>
             <p className='author'>Author:</p>
-            <p className='comment'>sjbjsjfdajndjakbgadnfkgnvkfnbkgfnkbnfgnbkfgnbsknbngkjbfnsnbsngnf</p>
+            <p className='comment'style={{width:"100%",marginTop:-15}}>sjbjsjfdajndjakbgadnfkgnvkfnbkgfnkbnfgnbkfgnbsknbngkjbfnsnbsngnf</p>
             </div>
             <div className='  p-1'>
             <p className='author'>Author:</p>
-            <p  className='comment'>sjbjsjfdajndjakbgadnfkgnvkfnbkgfnkbnfgnbkfgnbsknbngkjbfnsnbsngnf</p>
+            <p  className='comment' style={{width:"100%",marginTop:-15}}>sjbjsjfdajndjakbgadnfkgnvkfnbkgfnkbnfgnbkfgnbsknbngkjbfnsnbsngnf</p>
             </div>
             <div className='  p-1'>
             <p className='author'>Author:</p>
-            <p  className='comment'>sjbjsjfdajndjakbgadnfkgnvkfnbkgfnkbnfgnbkfgnbsknbngkjbfnsnbsngnf</p>
+            <p  className='comment' style={{width:"100%", marginTop:-15}}>sjbjsjfdajndjakbgadnfkgnvkfnbkgfnkbnfgnbkfgnbsknbngkjbfnsnbsngnf</p>
             </div>
             <div className='  p-1'>
             <p className='author'>Author:</p>
-            <p  className='comment'>sjbjsjfdajndjakbgadnfkgnvkfnbkgfnkbnfgnbkfgnbsknbngkjbfnsnbsngnf</p>
+            <p  className='comment' style={{width:"100%", marginTop:-15}}>sjbjsjfdajndjakbgadnfkgnvkfnbkgfnkbnfgnbkfgnbsknbngkjbfnsnbsngnf</p>
             </div>
            </div>
            <form  className='d-flex flex-row m-1 mt-1'>

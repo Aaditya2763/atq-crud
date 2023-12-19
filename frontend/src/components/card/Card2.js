@@ -5,12 +5,12 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import image from "../../assets/post images/img1.svg"
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
-import React,{Fragment,useState} from 'react'
+import React,{Fragment,useEffect,useState} from 'react'
 import { IoEyeOutline } from "react-icons/io5";
 import Form from 'react-bootstrap/Form';
+import axios from "axios"
 
-
-import { Link } from 'react-router-dom';
+import { Link ,useParams} from 'react-router-dom';
 import { FaHeart } from "react-icons/fa";
 import classes from './Card.module.css';
 import { useSelector } from 'react-redux';
@@ -19,7 +19,8 @@ const Card2 = ({headingStyle,descStyle}) => {
      const [show, setShow] = useState(false);
     const [remove, setRemove] = useState(false);
     const [selectedImage, setSelectedImage] = useState(null);
-
+    const { id } = useParams();
+    const[post,setpost]=useState()
     const handleRemoveClose = () => setRemove(false);
     const handleRemoveShow = () => setRemove(true);
      const handleClose = () => setShow(false);
@@ -45,7 +46,28 @@ const Card2 = ({headingStyle,descStyle}) => {
         reader.readAsDataURL(file);
       }
     };
-  
+
+    useEffect(() => {
+      const fetchData = async () => {
+        try {
+          const response = await axios.get(
+            `https://atq-assignment-backend.onrender.com/api/post/${id}`
+          );
+          // Process the response here
+         setpost(response.data)
+         
+        
+        } catch (error) {
+          console.error('Error fetching data:', error.message);
+          // Handle errors if needed
+        }
+      };
+    
+      // Call the async function when the component mounts
+      fetchData();
+     
+    }, [id])
+    // console.log(post)
   return (
     <Fragment>
         {/* edit modal */}
@@ -156,24 +178,26 @@ const Card2 = ({headingStyle,descStyle}) => {
           </Button>)}
         </Modal.Footer>
       </Modal>
-        <Row  style={{width:"60%",}}>
+        <Row  >
       
       <Col >
      
-        <Card className='m-4' >
-        <Link to={`/${123}`} style={{textDecoration:'none'}}>
-          <Card.Img variant="top" src={image} />
-          </Link>
+        
+          <Card className='m-4' >
+        
+         {post &&  ( <Card.Img variant="top" src={post.postImage} />)}
+         
+         {!post && (<Card.Img variant="top" src={image} />)}
+         
+          
           <Card.Body>
             <Card.Title style={{fontFamily: 'IBM Plex Sans', fontSize: '18px', fontStyle: 'normal', fontWeight: 500,color:'black'}}>✍️ Article</Card.Title>
-            <div  className="d-flex flex-row justify-content-between" >
-            <Link to={`/${123}`} style={{textDecoration:'none'}}>
-            <Card.Title style={headingStyle}  >What if famous brands had regular fonts? Meet RegulaBrands!I’ve worked in UX for the better part of a decade. From now on, I plan to reijfdbdjbfjbbbbjbvdkjnvioe
-            bsjdbdjbfjbdzjfbjadbfkjbdskjnkaendkjvn
-                    dfvnioedfvafodjvfdovjefdjobvofdbofnkjdsgnvoindr…</Card.Title>
-            </Link>
+            <div  className="d-flex flex-row justify-content-between" style={{overflow:"wrap"}} >
+            
+            <Card.Title className={classes.title} style={{color:"blue"}}>{post && post.title}</Card.Title>
+           {!post && (<button className='btn btn-danger' onClick={()=>window.location.reload()}>something went wrong try again</button>)}
            
-            <Dropdown className='bg-light btn-sm ' >
+            {/* <Dropdown className='bg-light btn-sm ' >
     <Dropdown.Toggle className='bg-light btn-sm text-black' >
   
     </Dropdown.Toggle>
@@ -181,16 +205,12 @@ const Card2 = ({headingStyle,descStyle}) => {
     <Dropdown.Menu>
       <Dropdown.Item onClick={handleShow}>Edit</Dropdown.Item>
       <Dropdown.Item onClick={handleRemoveShow}>Delete </Dropdown.Item>
-      <Dropdown.Item ><Link to={`/${123}`}style={{textDecoration:"none",color:'black'}}>View </Link></Dropdown.Item>
+     
     </Dropdown.Menu>
-  </Dropdown>
+  </Dropdown> */}
             </div>
-            <Card.Text style={descStyle}>
-            I’ve worked in UX for the better part of a decade. From now on, I plan to reijfdbdjbfjbbbbjbvdkjnvioe
-            bsjdbdjbfjbdzjfbjadbfkjbdskjnkaendkjvnI’ve worked in UX for the better part of a decade. From now on, I plan to reijfdbdjbfjbbbbjbvdkjnvioe
-            bsjdbdjbfjbdzjfbjadbfkjbdskjnkaendkjvn
-                    dfvnioedfvafodjvfdovjefdjobvofdbofnkjdsgnvoindr…
-                    dfvnioedfvafodjvfdovjefdjobvofdbofnkjdsgnvoindr…
+            <Card.Text >
+            {post && post.description}
             </Card.Text>
             
           </Card.Body>
@@ -207,7 +227,7 @@ const Card2 = ({headingStyle,descStyle}) => {
                      
                   }}
                   />
-                  <p style={{fontFamily: 'IBM Plex Sans', fontSize: '18px', fontStyle: 'normal', fontWeight: 600,color:"black",marginTop:15,paddingLeft:10}}>Sarthak Kamra</p>
+                  <p style={{fontFamily: 'IBM Plex Sans', fontSize: '18px', fontStyle: 'normal', fontWeight: 600,color:"black",marginTop:15,paddingLeft:10}}>{post && post.author}</p>
 
               </div>
               <div className="d-flex flex-row align-items-center justify-content-between " style={{width:"150px", paddingRight:10}}>
@@ -217,6 +237,7 @@ const Card2 = ({headingStyle,descStyle}) => {
               </div>
           </div>
         </Card>
+      
       </Col>
     
   </Row>

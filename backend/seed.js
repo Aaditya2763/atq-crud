@@ -24,8 +24,8 @@ const dummyPosts = [
   ];
   
   async function seedDB(){
-    await Post.deleteMany({});
-    await Post.insertMany(dummyPosts);
+    // await Post.deleteMany({});
+    // await Post.insertMany(dummyPosts);
     console.log('Product Seeded');
   
 }

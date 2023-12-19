@@ -14,6 +14,10 @@
    color: rgb(208, 207, 207);
   
 }
+.title{
+   height: auto;
+    overflow: wrap;
+}
 .likeIcon:hover{
     color: red;
     font-size: 2rem;
@@ -25,3 +29,9 @@
 flex-direction: column;
     }
 }
+@media screen and (max-width:768px) {
+    .title{
+width:60%;
+    }
+}
+

@@ -369,11 +369,11 @@ console.log(response)
                 key={item.id}
                 style={{ width: "100%" }}
               >
-                <Link to={`/${123}`} style={{ textDecoration: "none" }}>
+                <Link to={`/${item.id}`} style={{ textDecoration: "none" }}>
                   <Card.Img
                     variant="top"
                     src={item.postImage}
-                    style={{ width: "100%", height: "300px" }}
+                    style={{ width: "100%", height: "200px", }}
                   />
                 </Link>
                 <Card.Body>
@@ -389,7 +389,7 @@ console.log(response)
                     ✍️ Article
                   </Card.Title>
                   <div className="d-flex flex-row justify-content-between">
-                    <Link to={`/${123}`} style={{ textDecoration: "none" }}>
+                    <Link to={`/${item.id}`} style={{ textDecoration: "none" }}>
                       <Card.Title style={headingStyle}>{item.title}</Card.Title>
                     </Link>
 
@@ -411,10 +411,10 @@ console.log(response)
                         </Dropdown.Item>
                         <Dropdown.Item>
                           <Link
-                            to={`/${123}`}
+                            to={`/${item.id}`}
                             style={{ textDecoration: "none", color: "black" }}
                           >
-                            View{" "}
+                            View
                           </Link>
                         </Dropdown.Item>
                       </Dropdown.Menu>
@@ -475,7 +475,7 @@ console.log(response)
           </Row>
         ))}
 
-        <h1 style={{margin:"0px auto"}}>Create New Posts</h1>
+        {!data &&(<h1 style={{margin:"0px auto"}}>Create New Posts</h1>)}
       </div>
     </Fragment>
   );
