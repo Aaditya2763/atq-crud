@@ -33,9 +33,10 @@ app.use(express.urlencoded({ extended: true }));
 
 const authRoutes = require('./routes/auth/authRoutes');
 const postRoutes = require('./routes/posts/postRoutes');
-
+const commentsRoutes=require('./routes/comments/commentsRoute')
 app.use(authRoutes);
 app.use('/api', postRoutes);
+app.use('/api',commentsRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

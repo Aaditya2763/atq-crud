@@ -14,6 +14,7 @@ import { FaHeart } from "react-icons/fa";
 import classes from "./Card.module.css";
 import { useSelector } from "react-redux";
 import { Alert } from "react-bootstrap";
+
 const CardBox = ({ headingStyle, descStyle,  user,newpost}) => {
   const [show, setShow] = useState(false);
   const [remove, setRemove] = useState(false);
@@ -35,8 +36,7 @@ const CardBox = ({ headingStyle, descStyle,  user,newpost}) => {
     const fetchAllPost = async () => {
       try {
         const response = await axios.get('http://localhost:5000/api/post');
-        const result=response;
-       
+
         if(response.status==200)
         {
           setdata(response.data);
@@ -47,7 +47,9 @@ const CardBox = ({ headingStyle, descStyle,  user,newpost}) => {
     };
   
     fetchAllPost(); // Call the function when the component mounts
-  }, [data,newpost]); 
+  }, [data]); 
+  
+  console.log(data)
   const loggedIn = useSelector((state) => state.auth.loggedIn);
 
   const handleTitleChange = (e) => setTitle(e.target.value);

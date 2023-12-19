@@ -20,25 +20,6 @@ function App() {
    
   };
 
-  useEffect(() => {
-    const fetchAllPost = async () => {
-      try {
-        const response = await axios.get('http://localhost:5000/api/post');
-        const result=response;
-       
-        if(response.status==200)
-        {
-          setdata(response.data);
-        }
-      } catch (error) {
-        throw new Error("Unable to fetch data");
-      }
-    };
-  
-    fetchAllPost(); // Call the function when the component mounts
-  }, []); // Dependency array is empty for componentDidMount behavior
-  
-  
 
   return (
     <Provider store={store}>

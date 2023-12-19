@@ -29,7 +29,7 @@ const[errorMessage,setErrorMessage]=useState('')
   const handleTitleChange = (e) => setTitle(e.target.value);
   const handleAuthorChange = (e) => setAuthor(e.target.value);
   const handleDescriptionChange = (e) => setDescription(e.target.value);
-
+const[newPost,setnewPost]=useState();
   const imageChangeHandler = (event) => {
     const file = event.target.files[0];
    
@@ -74,6 +74,7 @@ const[errorMessage,setErrorMessage]=useState('')
   
       
       if (response.status === 200) {
+        setnewPost(response.data);
         setsuccessmessage("Post created successfully");
         setTitle("");
         setDescription("");
@@ -367,7 +368,7 @@ const[errorMessage,setErrorMessage]=useState('')
         </div>
       </Container>
       <Container className=" d-flex flex-row align-items-center mt-3  mb-3  ">
-        <CardBox data={data} user={user} descStyle={{fontFamily: 'IBM Plex Sans', fontSize: '19px', fontStyle: 'normal', fontWeight: 400,color:"#5C5C5C", width:"500px", height:"60px", overflow:'hidden'}}
+        <CardBox data={data} user={user} newpost={newPost} descStyle={{fontFamily: 'IBM Plex Sans', fontSize: '19px', fontStyle: 'normal', fontWeight: 400,color:"#5C5C5C", width:"500px", height:"60px", overflow:'hidden'}}
         headingStyle={{fontFamily: 'IBM Plex Sans', fontSize: '22px', fontStyle: 'normal', fontWeight: 600,lineHeight:"30px",width:"500px", height:"35px", overflow:'hidden'}}  />
   
       </Container>
