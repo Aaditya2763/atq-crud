@@ -62,8 +62,8 @@ const commentHandler=async()=>{
   return (
     <Fragment>
       <Container className="box" >
-        <Card2 descStyle={{fontFamily: 'IBM Plex Sans', fontSize: '19px', fontStyle: 'normal', fontWeight: 400,color:"#5C5C5C", width:"100%", height:"auto", overflow:'hidden'}}
-        headingStyle={{fontFamily: 'IBM Plex Sans', fontSize: '22px', fontStyle: 'normal', fontWeight: 600,lineHeight:"30px",width:"100%", height:"auto", overflow:'hidden'}} />
+        <Card2 descStyle={{fontFamily: 'IBM Plex Sans', fontSize: '19px', fontStyle: 'normal', fontWeight: 400,color:"#5C5C5C", width:"60%", height:"auto", overflow:'hidden'}}
+        headingStyle={{fontFamily: 'IBM Plex Sans', fontSize: '22px', fontStyle: 'normal', fontWeight: 600,lineHeight:"30px",width:"40%", height:"auto", overflow:'hidden'}} />
         <div className="comment border" style={{height:"350px"}} >
             <p className="heading" style={{fontSize:20}}> All Comments</p>
            
@@ -91,7 +91,7 @@ const commentHandler=async()=>{
             
             
            </div>
-           <form  className='d-flex flex-row m-1 mt-1' onSubmit={(e)=>{
+           <form  className='d-flex flex-row  mt-1' style={{width:"250px"}} onSubmit={(e)=>{
             e.preventDefault();
             if(loggedIn){
               commentHandler();

@@ -183,7 +183,7 @@ const Card2 = ({headingStyle,descStyle}) => {
       <Col >
      
         
-          <Card className='m-4' >
+          <Card className='m-4 '  style={{width:"60%"}}>
         
          {post &&  ( <Card.Img variant="top" src={post.postImage} />)}
          
