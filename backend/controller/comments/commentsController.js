@@ -1,15 +1,11 @@
 
 const expressAsyncHandler = require("express-async-handler");
 const Comment=require("../../modal/comment/comment");
-const Post = require("../../modal/post/Post");
 
 const fetchCommentsCtrl=expressAsyncHandler(async(req,res)=>{
-    const {id}=req.body;
-    console.log(id)
     try {
-        const response=await Post.findById(id);
-        
-        res.status(200).json({message:"fetched the comments successfully",response})
+        const comments=await Comment.find({}).sort("-created");
+        res.status(200).json({message:"fetched the comments successfully",comments})
     } catch (error) {
         res.status(201).json({message:"internal server error"})
         
@@ -20,13 +16,16 @@ const fetchCommentsCtrl=expressAsyncHandler(async(req,res)=>{
 
     const createCommentsCtrl=expressAsyncHandler(async(req,res)=>{
        
-        const {id,commentmsg,user}=req.body;
+        const {id,commentmsg,username}=req.body;
+        console.log(id,commentmsg,username)
         try {
-            const comment=await Post.findById(id);
-            const updatedComments=  comment.comments.push({postId:id,
-                user:user,
-                description:commentmsg})
-            res.status(200).json({message:"comment created successfully",updatedComments})
+            const comment=await Comment.create({
+                postId:id,
+                user:username,
+                description:commentmsg
+            }) 
+            
+            res.status(200).json({message:"comment created successfully",comment})
         } catch (error) {
             res.status(201).json({message:"Something went wrong try again",error})
         }
