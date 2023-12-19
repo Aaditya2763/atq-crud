@@ -15,9 +15,9 @@ const[commentmsg,setcommentmsg]=useState("")
 const[errormsg,seterrormsg]=useState("")
 const{id}=useParams();
   useEffect(() => {
-    const fetchAllPost = async () => {
+    const fetchAllComments = async () => {
       try {
-        const response = await axios.get('https://atq-assignment-backend.onrender.com/api/comments');
+        const response = await axios.get('https://atq-assignment-backend.onrender.com/api/comments',{id});
   
         if (response.status === 200) {
           setcomments(response.data);
@@ -27,7 +27,7 @@ const{id}=useParams();
       }
     };
   
-    fetchAllPost(); // Call the function when the component mounts
+    fetchAllComments(); // Call the function when the component mounts
   }, [Comment]);
   
   console.log(comments)
@@ -65,9 +65,9 @@ const commentHandler=async(id)=>{
   <div className="chat" style={{ width: "100%", height: "auto" }}>
     {comments.map((comment, index) => (
       <div key={index} style={{ marginBottom: "15px" }}>
-        <p className="author">Author: {comment.author}</p>
+        <p className="author">Author: {comment.user}</p>
         <p className="comment" style={{ width: "100%", marginTop: "-15px" }}>
-          {comment.text}
+          {comment.description}
         </p>
       </div>
     ))}
@@ -78,7 +78,10 @@ const commentHandler=async(id)=>{
             
             
            </div>
-           <form  className='d-flex flex-row m-1 mt-1' onSubmit={commentHandler}>
+           <form  className='d-flex flex-row m-1 mt-1' onSubmit={(e)=>{
+            e.preventDefault();
+            commentHandler();
+           }}>
             <input placeholder='write comment' className='form-control'  value={commentmsg} onChange={(e)=>setcommentmsg(e.target.value)}/>
             <button type='submit' className='btn btn-primary'><PiTelegramLogo/></button>
            </form>

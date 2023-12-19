@@ -12,6 +12,12 @@ const postSchema = new mongoose.Schema(
       type:String,
       default:"Admin"
     },
+    comments:[
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Post",
+      },
+    ],
     isLiked: {
       type: Boolean,
       default: false,
