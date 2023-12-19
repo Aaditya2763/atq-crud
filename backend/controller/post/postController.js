@@ -68,14 +68,14 @@ const createPostCtrl = expressAsyncHandler(
   
     try {
       // Validate the ID
-      validateMongoDBId(id);
+      
   
       // Fetch the post by its ID and populate the "user" field
       const post = await Post.findById(id).select("-password").populate("user");
   
       if (!post) {
         // If the post is not found, return a 404 Not Found status
-        return res.status(404).json({ message: "Post not found" });
+        return res.status(202).json({ message: "Post not found" });
       }
   
       // Increment the "numViews" field of the post
@@ -88,11 +88,11 @@ const createPostCtrl = expressAsyncHandler(
   
       if (error.name === "CastError") {
         // If the provided ID is invalid, return a 400 Bad Request status
-        res.status(400).json({ message: "Invalid post ID" });
+        res.status(201).json({ message: "Invalid post ID" });
       } else {
         // For other errors, return a 500 Internal Server Error status
         res
-          .status(500)
+          .status(202)
           .json({ message: "Internal server error. Unable to fetch post." });
       }
     }

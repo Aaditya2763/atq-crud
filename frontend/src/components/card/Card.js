@@ -82,13 +82,7 @@ const CardBox = ({ headingStyle, descStyle, data, user }) => {
 
     try {
      
-      const response = await axios.post("http://localhost:5000/api/post", {
-        title,
-        description,
-        imageLink,
-        Author,
-        id,
-      });
+      const response = await axios.post(`http://localhost:5000/api/post/${id}`);
 
       if (response.status === 200) {
         setsuccessmessage("Post created successfully");

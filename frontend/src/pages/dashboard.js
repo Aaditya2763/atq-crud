@@ -62,7 +62,7 @@ const[errorMessage,setErrorMessage]=useState('')
   
     try {
       const id = user.id;
-      const response = await axios.post("http://localhost:5000/api/post", {
+      const response = await axios.post("https://atq-assignment-backend.onrender.com/api/post", {
         title,
         description,
         imageLink,
