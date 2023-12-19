@@ -1,57 +1,49 @@
-if(process.env.Node_Env !=='production'){
-    require('dotenv').config();
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config();
 }
-//initialising express
-const express=require('express');
 
+const express = require('express');
 const cors = require('cors');
-//importing dbconnect file to connect database
-const dbConnect=require('./database/dbConnect');
-//error handler middleware
-const{ errorHandler,notFound}=require('./middleware/errorHandler');
+const dbConnect = require('./database/dbConnect');
+const { errorHandler, notFound } = require('./middleware/errorHandler');
 const seedDB = require('./seed');
 
-//assigning express toapp variable
-const app =express();
+const app = express();
 
-//connecting database
 dbConnect();
-seedDB()
+seedDB();
 
-// Enable CORS for a specific origin
-app.use(cors({
-    origin: ['https://atq-crud.vercel.app', 'http://localhost:3000', ],
+const allowedOrigins = ['https://atq-crud.vercel.app', 'http://localhost:3000'];
+
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
     optionsSuccessStatus: 200,
-  }));
-  
-//middleware use to provide json data to a request
+  })
+);
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-//importing all auth routes to authroutesroutes
-const authRoutes=require('./routes/auth/authRoutes');
-// const userRoutes=require('./routes/users/userRoutes')
-const postRoutes=require('./routes/posts/postRoutes')
-//  const commentRoutes=require("./routes/comments/commentsRoutes")
-//allowing app to use routes
 
-app.use(authRoutes); 
+const authRoutes = require('./routes/auth/authRoutes');
+const postRoutes = require('./routes/posts/postRoutes');
 
-app.use('/api',postRoutes);
-// app.use('/api',commentRoutes)
+app.use(authRoutes);
+app.use('/api', postRoutes);
 
-
-
-// always use middleware velow your all routes
 app.use(notFound);
-//As error handler middleware dependent on notfound middleware to receive  error message 
-//that is why we are using it before errorHandler
 app.use(errorHandler);
 
-//dynamic port allocation in addition with a constat port 
-const PORT=process.env.PORT || 5000;
-app.use("/",(req,res)=>{
-  res.send("Server is running on 5000")
-})
-//Server
- app.listen(PORT,console.log(`server running at ${PORT}`));
-   
+const PORT = process.env.PORT || 5000;
+
+app.use("/", (req, res) => {
+  res.send("Server is running on 5000");
+});
+
+app.listen(PORT, console.log(`Server is running at ${PORT}`));
