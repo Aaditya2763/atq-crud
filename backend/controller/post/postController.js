@@ -10,7 +10,7 @@ const fetchAllPosts = expressAsyncHandler(async (req, res) => {
   
       if (posts.length === 0) {
         // Handle the case when there are no posts found
-        res.status(404).json({ message: "No posts found." });
+        res.status(201).json({ message: "No posts found." });
       } else {
         // Send a JSON response with the fetched posts
         res.status(200).json(posts);
@@ -18,7 +18,7 @@ const fetchAllPosts = expressAsyncHandler(async (req, res) => {
     } catch (error) {
       console.error(error);
       res
-        .status(500)
+        .status(202)
         .json({ message: "Internal server error. Unable to fetch posts." });
     }
   });
@@ -104,23 +104,12 @@ const createPostCtrl = expressAsyncHandler(
   
   const updateParticulerPost = expressAsyncHandler(async (req, res) => {
     const { id } = req.params;
-    validateMongoDBId(id);
+    
   
-    const { title, description } = req.body;
-    const filter = new Filter();
-    const isProfaneTitle = filter.isProfane(title);
-    const isProfanedesc = filter.isProfane(description);
-  
+    const { title, description,postImage,Author } = req.body;
+    
     // Block user if profane words are detected
-    if (isProfaneTitle || isProfanedesc) {
-      await User.findByIdAndUpdate(id, {
-        isBlocked: true,
-      });
-      return res.status(400).json({
-        message:
-          "Creating failed because it contains profane words, please remove or change these words and try again.",
-      });
-    }
+
   
     try {
       const updatedPost = await Post.findByIdAndUpdate(
@@ -128,7 +117,8 @@ const createPostCtrl = expressAsyncHandler(
         {
           title: title,
           description: description,
-          user:req.user?.id
+          postImage:postImage,
+          author:Author
           // Add other fields you want to update here
         },
         { new: true }
@@ -136,14 +126,14 @@ const createPostCtrl = expressAsyncHandler(
   
       if (!updatedPost) {
         // If the post is not found, return a 404 Not Found status
-        return res.status(404).json({ message: "Post not found" });
+        return res.status(201).json({ message: "Post not found" });
       }
   
       // Send a JSON response with the updated post
-      res.status(200).json(updatedPost);
+      res.status(200).json({updatedPost,message:"post updated successfully"});
     } catch (error) {
       console.error(error);
-      res.status(500).json({ message: "Internal server error while updating post" });
+      res.status(202).json({ message: "Internal server error while updating post" });
     }
   });
   
@@ -155,7 +145,7 @@ const createPostCtrl = expressAsyncHandler(
   
   const deleteParticularPost=expressAsyncHandler(async(req,res)=>{
     const {id}=req.params;
-    validateMongoDBId(id)
+    
     try {
       const deletepost=await Post.findByIdAndDelete(id);
       res.status(200).json("post deleted successfully")
@@ -163,7 +153,7 @@ const createPostCtrl = expressAsyncHandler(
     } catch (error) {
       res.status(error.status).json(error)
     }
-    res.json("deleted")
+    
   })
   
   
@@ -212,7 +202,7 @@ const createPostCtrl = expressAsyncHandler(
         }
         res.json(post)
   } catch (error) {
-    res.status(500).json.json({message:"internal server error",error})
+    res.status(202).json({message:"internal server error",error})
   }
   })
   
@@ -264,7 +254,7 @@ const createPostCtrl = expressAsyncHandler(
           }
           res.json(post)
     } catch (error) {
-      res.status(500).json.json({message:"internal server error",error})
+      res.status(202).json({message:"internal server error",error})
     }
     })
   

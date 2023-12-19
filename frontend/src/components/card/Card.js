@@ -19,8 +19,9 @@ const CardBox = ({ headingStyle, descStyle, data, user }) => {
   const [remove, setRemove] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const [title, setTitle] = useState("");
+  const[id,setid]=useState("");
   const [description, setDescription] = useState("");
-  const [successmessage, setsuccessmessage] = useState("");
+  const[successmessage,setsuccessmessage]=useState("")
   const [errorMessage, setErrorMessage] = useState("");
   const [imageLink, setimageLink] = useState("");
   const [Author, setAuthor] = useState("");
@@ -48,21 +49,43 @@ const CardBox = ({ headingStyle, descStyle, data, user }) => {
     }
   };
 
-  const postEditHandler = async (e) => {
-    e.preventDefault();
+
+  
+async function postdeleteHandler(id)  {
+   console.log("idid",id)
+
+  try {
+    
+    const response = await axios.delete(`https://atq-assignment-backend.onrender.com/api/post/${id}`);
+console.log(response);
+    if (response.status === 200) {
+      setsuccessmessage("Post deleted successfully");
+     handleRemoveClose(false)
+      // Additional logic or state updates if needed
+    } else {
+      setErrorMessage("Something went wrong try again");
+      setsuccessmessage("");
+    }
+  } catch (error) {
+    setErrorMessage(error.response?.data?.message || "Network error");
+    setsuccessmessage("");
+  }
+};
+async function postEditHandler  (id)  {
+   
 
     try {
-      const id = user.id;
-      const response = await axios.post("http://localhost:5000/api/post", {
+      
+      const response = await axios.put(`https://atq-assignment-backend.onrender.com/api/post/${id}`, {
         title,
         description,
         imageLink,
         Author,
-        id,
+     
       });
 
       if (response.status === 200) {
-        setsuccessmessage("Post created successfully");
+        setsuccessmessage("Post Updated successfully");
         setTitle("");
         setDescription("");
         setSelectedImage("");
@@ -70,7 +93,7 @@ const CardBox = ({ headingStyle, descStyle, data, user }) => {
         setErrorMessage("");
         // Additional logic or state updates if needed
       } else {
-        setErrorMessage(response.data.message || "Unknown error occurred");
+        setErrorMessage("Something went wrong try again");
         setsuccessmessage("");
       }
     } catch (error) {
@@ -81,23 +104,23 @@ const CardBox = ({ headingStyle, descStyle, data, user }) => {
   async function fetchPostData(id){
 
     try {
-     
-      const response = await axios.post(`http://localhost:5000/api/post/${id}`);
-
+     console.log(id)
+      const response = await axios.get(`https://atq-assignment-backend.onrender.com/api/post/${id}`);
+console.log(response)
       if (response.status === 200) {
-        setsuccessmessage("Post created successfully");
+        
         setTitle(response.data.title);
         setDescription(response.data.title);
-        
+        setAuthor(response.data.author)
         setimageLink(response.data.postImage);
         setErrorMessage("");
         // Additional logic or state updates if needed
       } else {
-        setErrorMessage(response.data.message || "Unknown error occurred");
+        setErrorMessage("Post not found");
         setsuccessmessage("");
       }
     } catch (error) {
-      setErrorMessage(error.response?.data?.message || "Network error");
+      setErrorMessage("Unable to fetch post try again");
       setsuccessmessage("");
     }
 
@@ -105,6 +128,7 @@ const CardBox = ({ headingStyle, descStyle, data, user }) => {
 
   const handleShow = (id) => {
     setShow(true);
+    console.log(id)
     fetchPostData(id);
   };
   return (
@@ -138,7 +162,10 @@ const CardBox = ({ headingStyle, descStyle, data, user }) => {
           </Alert>
         )}
         <Modal.Body>
-          <Form onSubmit={postEditHandler}>
+          <Form onSubmit={(e)=>{
+            e.preventDefault();
+            postEditHandler(id)
+          }}>
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
               <Form.Label
                 style={{
@@ -307,19 +334,34 @@ const CardBox = ({ headingStyle, descStyle, data, user }) => {
                     width: "100px",
                   }}
                   type="submit"
+                 
                 >
-                  Post
+                  Edit 
                 </Button>
               )}
             </div>
           </Form>
         </Modal.Body>
       </Modal>
+      <Modal show={remove} onHide={handleRemoveClose}>
+        <Modal.Header closeButton>
+         {loggedIn ? <Modal.Title className='text-warning'>Warning ! </Modal.Title>:  <Modal.Title className='text-danger'>You need to login First</Modal.Title>}
+        </Modal.Header>
+       {loggedIn &&( <Modal.Body>Are you sure you want to delete this Post.You will not be able to retrieve it in future </Modal.Body>)}
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleRemoveClose}>
+            Close
+          </Button>
+         {loggedIn &&( <Button variant="danger" onClick={()=>postdeleteHandler(id)}>
+            Delete
+          </Button>)}
+        </Modal.Footer>
+      </Modal>
       <div
         className=" d-flex flex-row justify-content-between flex-wrap  "
         style={{ height: "auto", overflow: "wrap" }}
       >
-        {data.map((item) => (
+        {`${data.length}>0` && data.map((item) => (
           <Row key={item.id}>
             <Col>
               <Card
@@ -355,11 +397,17 @@ const CardBox = ({ headingStyle, descStyle, data, user }) => {
                       <Dropdown.Toggle className="bg-light btn-sm text-black"></Dropdown.Toggle>
 
                       <Dropdown.Menu>
-                        <Dropdown.Item onClick={() => handleShow(item.id)}>
+                        <Dropdown.Item onClick={() => {
+                          setid(item.id)
+                          handleShow(item.id);
+                        }}>
                           Edit
                         </Dropdown.Item>
-                        <Dropdown.Item onClick={handleRemoveShow}>
-                          Delete{" "}
+                        <Dropdown.Item onClick={()=>{
+                          setid(item.id);
+                          handleRemoveShow ()}}
+                        >
+                          Delete
                         </Dropdown.Item>
                         <Dropdown.Item>
                           <Link
@@ -426,6 +474,8 @@ const CardBox = ({ headingStyle, descStyle, data, user }) => {
             </Col>
           </Row>
         ))}
+
+        <h1 style={{margin:"0px auto"}}>Create New Posts</h1>
       </div>
     </Fragment>
   );

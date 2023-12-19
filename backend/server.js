@@ -42,8 +42,6 @@ app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 
-app.use("/", (req, res) => {
-  res.send("Server is running on 5000");
+app.listen(PORT, () => {
+  console.log(`Server is running at http://localhost:${PORT}`);
 });
-
-app.listen(PORT, console.log(`Server is running at ${PORT}`));

@@ -24,8 +24,12 @@ function App() {
     const fetchAllPost = async () => {
       try {
         const response = await axios.get('http://localhost:5000/api/post');
-        
-        setdata(response.data);
+        const result=response;
+       
+        if(response.status==200)
+        {
+          setdata(response.data);
+        }
       } catch (error) {
         throw new Error("Unable to fetch data");
       }
@@ -46,7 +50,7 @@ function App() {
           />
 
           <Routes>
-            <Route path="/" element={<Dashboard  data={data} user={loginuser}/>} />
+            <Route path="/" element={<Dashboard  data={data} setdata={setdata} user={loginuser}/>} />
             <Route path="/:id" element={<PostBox data={data} user={loginuser} />} />
           </Routes>
         </div>

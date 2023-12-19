@@ -11,9 +11,10 @@ import classes from "./dashboard.module.css"
 import { useSelector } from "react-redux";
 import { FaHeart } from "react-icons/fa";
 import axios from "axios";
-const Dashboard = ({data,user}) => {
+const Dashboard = ({data,user, setdata}) => {
   const [show, setShow] = useState(false);
   const [title, setTitle] = useState('');
+
   const [imageLink, setimageLink] = useState('');
   const [Author, setAuthor] = useState('');
   const [description, setDescription] = useState('');
@@ -57,6 +58,7 @@ const[errorMessage,setErrorMessage]=useState('')
     return () => clearTimeout(timeoutId);
   }, []);
 
+
   const postSubmitHandler = async (e) => {
     e.preventDefault();
   
@@ -70,7 +72,7 @@ const[errorMessage,setErrorMessage]=useState('')
         id,
       });
   
-  
+      
       if (response.status === 200) {
         setsuccessmessage("Post created successfully");
         setTitle("");
@@ -78,6 +80,7 @@ const[errorMessage,setErrorMessage]=useState('')
         setSelectedImage("");
         setimageLink("")
         setErrorMessage("");
+       
         // Additional logic or state updates if needed
       } else {
       
@@ -257,11 +260,11 @@ const[errorMessage,setErrorMessage]=useState('')
         </Modal.Body>
        
       </Modal>
-      {loggedIn && message && ( <Alert duration={5000} className="alert alert-success d-flex flex-row justify-content-between" style={{width:"100%",height:"auto"}} closeButton>
+      {/* {loggedIn && message && ( <Alert duration={5000} className="alert alert-success d-flex flex-row justify-content-between" style={{width:"100%",height:"auto"}} closeButton>
             {messageData}
          
           
-          </Alert>)}
+          </Alert>)} */}
       {!loggedIn && (
         <div className="d-flex flex-column">
           <img
@@ -325,7 +328,7 @@ const[errorMessage,setErrorMessage]=useState('')
                 paddingBottom: 20,
               }}
             >
-              All posts({data.length ||0})
+              All posts({data.length||0})
             </li>
           </ul>
 
