@@ -86,10 +86,10 @@ const CardBox = ({ headingStyle, descStyle, data, user }) => {
 
       if (response.status === 200) {
         setsuccessmessage("Post created successfully");
-        setTitle("");
-        setDescription("");
-        setSelectedImage("");
-        setimageLink("");
+        setTitle(response.data.title);
+        setDescription(response.data.title);
+        
+        setimageLink(response.data.postImage);
         setErrorMessage("");
         // Additional logic or state updates if needed
       } else {
