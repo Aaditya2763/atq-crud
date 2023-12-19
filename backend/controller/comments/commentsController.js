@@ -15,13 +15,13 @@ const fetchCommentsCtrl=expressAsyncHandler(async(req,res)=>{
 
 
     const createCommentsCtrl=expressAsyncHandler(async(req,res)=>{
-        const user=req.user;
-        const {postId,description}=req.body;
+       
+        const {id,commentmsg,user}=req.body;
         try {
             const comment=await Comment.create({
-                postId:postId,
+                postId:id,
                 user:user,
-                description:description
+                description:commentmsg
             })
             res.status(200).json({message:"comment created successfully",comment})
         } catch (error) {

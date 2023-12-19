@@ -1,7 +1,7 @@
 // PostBox.js
 import React, { Fragment, useState,useEffect } from 'react';
 
-import { Container } from 'react-bootstrap';
+import { Alert, Container } from 'react-bootstrap';
 import axios from 'axios';
 
 import  "./post.css"
@@ -53,7 +53,12 @@ const commentHandler=async(id)=>{
         headingStyle={{fontFamily: 'IBM Plex Sans', fontSize: '22px', fontStyle: 'normal', fontWeight: 600,lineHeight:"30px",width:"100%", height:"auto", overflow:'hidden'}} />
         <div className="comment border" style={{height:"350px"}} >
             <p className="heading" style={{fontSize:20}}> All Comments</p>
-            {errormsg && (<p style={{fontSize:16,overflow:"wrap"}}> All Comments</p>)}
+           
+         {errormsg && ( <Alert duration={5000} className="alert alert-danger d-flex flex-row justify-content-between" style={{width:"100%",height:"auto"}} >
+            {errormsg}
+         
+          
+          </Alert>)}
            <div className='commentContainer' style={{width:"100%",height:"300px"}}>
           
            {comments.length > 0 ? (
