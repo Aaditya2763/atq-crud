@@ -8,7 +8,7 @@ const commentSchema = new mongoose.Schema(
       required: [true, "Post is required"],
     },
     user: {
-      type: Object,
+      type: String,
       required: [true, "User is required"],
     },
     description: {

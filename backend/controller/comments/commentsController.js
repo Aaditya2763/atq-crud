@@ -25,7 +25,7 @@ const fetchCommentsCtrl=expressAsyncHandler(async(req,res)=>{
             })
             res.status(200).json({message:"comment created successfully",comment})
         } catch (error) {
-            res.status(500).json({message:"internal server error",error})
+            res.status(201).json({message:"Something went wrong try again",error})
         }
         
     },{new:true})
