@@ -1,30 +1,42 @@
-import React from "react";
-import { Navbar, Container } from "react-bootstrap";
+import React, { useEffect } from "react";
+import { Navbar, Container, Alert } from "react-bootstrap";
 import { IoMdArrowDropdown } from "react-icons/io";
 import { AiOutlineSearch } from "react-icons/ai";
-import Dropdown from 'react-bootstrap/Dropdown';
+import Dropdown from "react-bootstrap/Dropdown";
 import { useState } from "react";
-
+import axios from "axios";
 import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
 import { FaRegUser } from "react-icons/fa";
 import image from "../../assets/authlogo.svg";
 import { FcGoogle } from "react-icons/fc";
-import { useDispatch, useSelector } from 'react-redux';
-import { login, logout } from '../../redux/slices/authSlice';
+import { useDispatch, useSelector } from "react-redux";
+import { login, logout, register } from "../../redux/slices/authSlice";
 import { FaFacebook } from "react-icons/fa";
-const NavbarBox = () => {
+const NavbarBox = ({loginuserHandler,user}) => {
   const [show, setShow] = useState(false);
- 
+  const [data, setData] = useState([]);
+  const [username, setusername] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [loggedIn,setLoggedIn]=useState(false);
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [signinPage, setSigninPage] = useState(false);
   const [signupPage, setSignupPage] = useState(true);
   const [forget, setForget] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const showsignInHabandler = () => {
     setSigninPage(true);
     setSignupPage(false);
     setForget(false);
-   
   };
+
+
+ ;
+
   const hideSigninPage = () => {
     setSignupPage(true);
     setSigninPage(false);
@@ -37,15 +49,136 @@ const NavbarBox = () => {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-
-  const loggedIn = useSelector((state) => state.auth.loggedIn);
- 
   const dispatch = useDispatch();
+
+  const registerHandler = async (e) => {
+    e.preventDefault();
+
+    try {
+      setLoading(true);
+      const response = await axios.post("https://atq-crud.vercel.app/register", {
+        firstName,
+        lastName,
+        email,
+        password,
+      });
+
+      if (response.status === 200) {
+        setMessage("User Created Successfully");
+        setSignupPage(false);
+        setSigninPage(true);
+        dispatch(register());
+        setErrorMessage("");
+        setFirstName("")
+        setLastName("")
+        setEmail("")
+        setPassword("")
+        setErrorMessage("")
+        // Clear any previous error messages
+      } else {
+        // Assuming the server sends an error message in case of failure
+        setErrorMessage(response.data.message || "Something went wrong");
+        setMessage("");
+      }
+
+    } catch (error) {
+      // Handle network errors or unexpected errors
+      setErrorMessage("Something went wrong");
+      setMessage("");
+    } finally {
+      setLoading(false);
+    }
+  };
+  const logoutHandler = () => {
+    setSigninPage(false);
+    setSignupPage(false);
+    setForget(false);
+    window.location.reload();
+    dispatch(logout());
+  };
+  
+
+  const loginHandler = async (e) => {
+    e.preventDefault();
+
+    try {
+      setLoading(true);
+      const response = await axios.post("https://atq-crud.vercel.app/login", {
+        email,
+        password,
+      });
+
+      if (response.status == 200) {
+        loginuserHandler(response.data)
+        setMessage("User Loggedin Successfully");
+        
+        setLoggedIn(true)
+        setLastName("")
+        setEmail("")
+        setPassword("")
+        setSigninPage(false);
+        dispatch(login())
+        setErrorMessage("")
+        
+        // setForget(true)
+        // Assuming you want to set a success flag
+      } else {
+        setErrorMessage(response.data.message);
+      }
+    
+    } catch (e) {
+      setErrorMessage(e.message);
+    }
+  };
+ 
+  const forgetPasswordHandler = async (e) => {
+    e.preventDefault();
+  
+    try {
+      setLoading(true);
+      const response = await axios.put("https://atq-crud.vercel.app/update-password", {
+        email,
+        password,
+      });
+  
+      if (response.status === 200) {
+        setMessage("Password Updated Successfully");
+        setFirstName("");
+        setLastName("");
+        setEmail("");
+        setPassword("");
+        setSigninPage(true);
+        setForget(false);
+        setErrorMessage("");
+      } else {
+        setErrorMessage(response.data.message || "Unknown error occurred");
+      }
+   
+    } catch (e) {
+      
+      setErrorMessage(e.message || "An unexpected error occurred");
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  useEffect(() => {
+    // Your code here
+
+    const timeoutId = setTimeout(() => {
+      setMessage('');
+      setErrorMessage('')
+    }, 5000);
+   
+    // Clean up the timeout to avoid memory leaks
+    return () => clearTimeout(timeoutId);
+  }, [message,loggedIn]);
+
   return (
     <Navbar>
       <Container>
         <Navbar.Brand href="#home">
-          <img 
+          <img
             src="/assets/logo.svg"
             width="162"
             height="24"
@@ -83,17 +216,25 @@ const NavbarBox = () => {
         <div onClick={handleShow}>
           {loggedIn && (
             <div className="d-flex flex-row align-items-center">
-               <Dropdown>
-      <Dropdown.Toggle  id="dropdown-basic" style={{background:"white",border:"none",color:"black"}}>
-      <FaRegUser style={{width:"25px",height:"25px",marginRight:5}}/>
-      Hello, user
-      </Dropdown.Toggle>
+              
+              <Dropdown>
+                <Dropdown.Toggle
+                  id="dropdown-basic"
+                  style={{
+                    background: "white",
+                    border: "none",
+                    color: "black",
+                  }}
+                >
+                  Hello, {user.firstName}
+                </Dropdown.Toggle>
 
-      <Dropdown.Menu>
-        <Dropdown.Item onClick={() => dispatch(logout())} >Logout</Dropdown.Item>
-        
-      </Dropdown.Menu>
-    </Dropdown>
+                <Dropdown.Menu>
+                  <Dropdown.Item onClick={logoutHandler}>
+                    Logout
+                  </Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
             </div>
           )}
           {!loggedIn && (
@@ -161,7 +302,7 @@ const NavbarBox = () => {
                   Create Account
                 </h5>
                 <Container className="container">
-                  <Form>
+                  <Form onSubmit={registerHandler}>
                     <input
                       style={{
                         width: "50%",
@@ -173,6 +314,9 @@ const NavbarBox = () => {
                         fontWeight: 500,
                         paddingLeft: 10,
                       }}
+                      value={firstName}
+                      onChange={(e) => setFirstName(e.target.value)}
+                      required
                       placeholder="First Name"
                     />
                     <input
@@ -185,6 +329,9 @@ const NavbarBox = () => {
                         fontWeight: 500,
                         paddingLeft: 10,
                       }}
+                      value={lastName}
+                      onChange={(e) => setLastName(e.target.value)}
+                      required
                       placeholder="Last Name"
                     />
                     <br />
@@ -199,6 +346,10 @@ const NavbarBox = () => {
                         fontWeight: 500,
                         paddingLeft: 10,
                       }}
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                      type="email"
                       placeholder="Email"
                     />
                     <input
@@ -212,26 +363,16 @@ const NavbarBox = () => {
                         fontWeight: 500,
                         paddingLeft: 10,
                       }}
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
                       placeholder="Password"
                     />
-                    <input
-                      style={{
-                        width: "100%",
-                        height: 46,
-                        marginLeft: -10,
-                        fontFamily: "IBM Plex Sans",
-                        fontStyle: "normal",
-                        fontSize: "15px",
-                        fontWeight: 500,
-                        paddingLeft: 10,
-                      }}
-                      placeholder="Confirm Password"
-                    />
+
                     <button
                       className="container btn btn-primary rounded-pill"
                       style={{ marginLeft: -10, marginTop: 10, height: 40 }}
-                      type="button"
-                      onClick={() => dispatch(login())}
+                      type="submit"
                     >
                       Create Account
                     </button>
@@ -242,6 +383,7 @@ const NavbarBox = () => {
                         marginTop: 10,
                         border: "1px solid lightgray",
                       }}
+                      disabled={true}
                       type="button"
                       onClick={() => dispatch(login())}
                     >
@@ -273,6 +415,7 @@ const NavbarBox = () => {
                         fontSize: "15px",
                         fontWeight: 500,
                       }}
+                      disabled={true}
                     >
                       <FcGoogle
                         style={{
@@ -348,6 +491,16 @@ const NavbarBox = () => {
               computer engineering. Sign up now 🤘🏼
             </Modal.Title>
           </Modal.Header>
+          {message && ( <Alert duration={5000} className="alert alert-success d-flex flex-row justify-content-between" style={{width:"100%",height:"auto"}} >
+            {message}
+         
+          
+          </Alert>)}
+         {errorMessage && ( <Alert duration={5000} className="alert alert-danger d-flex flex-row justify-content-between" style={{width:"100%",height:"auto"}} >
+            {errorMessage}
+         
+          
+          </Alert>)}
           <Modal.Body>
             <Container className="d-flex flex-row  justify-content-between ">
               <div style={{ width: "100%" }}>
@@ -362,7 +515,7 @@ const NavbarBox = () => {
                   Sign In
                 </h5>
                 <Container className="container">
-                  <Form style={{ marginTop: 20 }}>
+                  <Form style={{ marginTop: 20 }} onSubmit={loginHandler}>
                     <input
                       style={{
                         width: "100%",
@@ -374,6 +527,9 @@ const NavbarBox = () => {
                         fontWeight: 500,
                         paddingLeft: 10,
                       }}
+                      required
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
                       placeholder="Email"
                     />
                     <input
@@ -387,13 +543,15 @@ const NavbarBox = () => {
                         fontWeight: 500,
                         paddingLeft: 10,
                       }}
+                      required
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
                       placeholder="Password"
                     />
                     <button
                       className="container btn btn-primary rounded-pill"
                       style={{ marginLeft: -10, marginTop: 10, height: 50 }}
-                      type="button"
-                      onClick={() => dispatch(login())}
+                      type="submit"
                     >
                       Sign in
                     </button>
@@ -405,7 +563,7 @@ const NavbarBox = () => {
                         border: "1px solid lightgray",
                       }}
                       type="button"
-                      onClick={() => dispatch(login())}
+                     disabled={true}
                     >
                       <FaFacebook
                         style={{ color: "#0000ff", width: 20, height: 20 }}
@@ -419,6 +577,7 @@ const NavbarBox = () => {
                           fontSize: "15px",
                           fontWeight: 500,
                         }}
+                      
                       >
                         Sign in with Facebook
                       </span>
@@ -435,6 +594,7 @@ const NavbarBox = () => {
                         fontSize: "15px",
                         fontWeight: 500,
                       }}
+                      disabled={true}
                     >
                       <FcGoogle
                         style={{
@@ -444,7 +604,7 @@ const NavbarBox = () => {
                           marginRight: 10,
                         }}
                         type="button"
-                        onClick={() => dispatch(login())}
+                     disabled={true}
                       />
                       Sign in with Google
                     </button>
@@ -525,6 +685,11 @@ const NavbarBox = () => {
               computer engineering. Sign up now 🤘🏼
             </Modal.Title>
           </Modal.Header>
+          {errorMessage && ( <Alert duration={5000} className="alert alert-danger d-flex flex-row justify-content-between" style={{width:"100%",height:"auto"}} >
+            {errorMessage}
+         
+          
+          </Alert>)}
           <Modal.Body>
             <Container className="d-flex flex-row  justify-content-between ">
               <div style={{ width: "100%" }}>
@@ -539,7 +704,7 @@ const NavbarBox = () => {
                   Forgot Password
                 </h5>
                 <Container className="container">
-                  <Form style={{ marginTop: 70 }}>
+                  <Form style={{ marginTop: 70 }} onSubmit={forgetPasswordHandler}>
                     <input
                       style={{
                         width: "100%",
@@ -551,6 +716,8 @@ const NavbarBox = () => {
                         fontWeight: 500,
                         paddingLeft: 10,
                       }}
+                      value={email}
+                      onChange={(e)=>setEmail(e.target.value)}
                       placeholder="Email"
                     />
                     <input
@@ -564,13 +731,15 @@ const NavbarBox = () => {
                         fontWeight: 500,
                         paddingLeft: 10,
                       }}
+                      value={password}
+                      onChange={(e)=>setPassword(e.target.value)}
                       placeholder="Password"
                     />
                     <button
                       className="container btn btn-primary rounded-pill"
                       style={{ marginLeft: -10, marginTop: 20, height: 50 }}
-                      type="button"
-                      onClick={() => dispatch(login())}
+                      type="submit"
+                    
                     >
                       change Password
                     </button>
