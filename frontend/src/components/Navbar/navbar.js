@@ -56,7 +56,7 @@ const NavbarBox = ({loginuserHandler,user}) => {
 
     try {
       setLoading(true);
-      const response = await axios.post("https://atq-crud.vercel.app/register", {
+      const response = await axios.post("http://localhost:5000/register", {
         firstName,
         lastName,
         email,
@@ -103,7 +103,7 @@ const NavbarBox = ({loginuserHandler,user}) => {
 
     try {
       setLoading(true);
-      const response = await axios.post("https://atq-crud.vercel.app/login", {
+      const response = await axios.post("http://localhost:5000/login", {
         email,
         password,
       });
@@ -136,7 +136,7 @@ const NavbarBox = ({loginuserHandler,user}) => {
   
     try {
       setLoading(true);
-      const response = await axios.put("https://atq-crud.vercel.app/update-password", {
+      const response = await axios.put("http://localhost:5000/update-password", {
         email,
         password,
       });
