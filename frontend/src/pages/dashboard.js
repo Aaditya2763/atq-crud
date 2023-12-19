@@ -328,7 +328,7 @@ const[errorMessage,setErrorMessage]=useState('')
                 paddingBottom: 20,
               }}
             >
-              All posts({data.length||0})
+              All posts
             </li>
           </ul>
 

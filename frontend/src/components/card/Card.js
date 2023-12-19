@@ -5,7 +5,7 @@ import Dropdown from "react-bootstrap/Dropdown";
 import image from "../../assets/post images/img1.svg";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { IoEyeOutline } from "react-icons/io5";
 import Form from "react-bootstrap/Form";
 import axios from "axios";
@@ -14,12 +14,13 @@ import { FaHeart } from "react-icons/fa";
 import classes from "./Card.module.css";
 import { useSelector } from "react-redux";
 import { Alert } from "react-bootstrap";
-const CardBox = ({ headingStyle, descStyle, data, user }) => {
+const CardBox = ({ headingStyle, descStyle,  user,newpost}) => {
   const [show, setShow] = useState(false);
   const [remove, setRemove] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const [title, setTitle] = useState("");
   const[id,setid]=useState("");
+  const[data,setdata]=useState([])
   const [description, setDescription] = useState("");
   const[successmessage,setsuccessmessage]=useState("")
   const [errorMessage, setErrorMessage] = useState("");
@@ -29,7 +30,24 @@ const CardBox = ({ headingStyle, descStyle, data, user }) => {
   const handleRemoveClose = () => setRemove(false);
   const handleRemoveShow = () => setRemove(true);
   const handleClose = () => setShow(false);
-
+  
+  useEffect(() => {
+    const fetchAllPost = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/api/post');
+        const result=response;
+       
+        if(response.status==200)
+        {
+          setdata(response.data);
+        }
+      } catch (error) {
+        throw new Error("Unable to fetch data");
+      }
+    };
+  
+    fetchAllPost(); // Call the function when the component mounts
+  }, [data,newpost]); 
   const loggedIn = useSelector((state) => state.auth.loggedIn);
 
   const handleTitleChange = (e) => setTitle(e.target.value);
@@ -61,6 +79,9 @@ console.log(response);
     if (response.status === 200) {
       setsuccessmessage("Post deleted successfully");
      handleRemoveClose(false)
+     setdata(() => {
+      return data.filter((item) => item.id === data.id);
+    });
       // Additional logic or state updates if needed
     } else {
       setErrorMessage("Something went wrong try again");
@@ -91,6 +112,7 @@ async function postEditHandler  (id)  {
         setSelectedImage("");
         setimageLink("");
         setErrorMessage("");
+       
         // Additional logic or state updates if needed
       } else {
         setErrorMessage("Something went wrong try again");
@@ -110,7 +132,7 @@ console.log(response)
       if (response.status === 200) {
         
         setTitle(response.data.title);
-        setDescription(response.data.title);
+        setDescription(response.data.description);
         setAuthor(response.data.author)
         setimageLink(response.data.postImage);
         setErrorMessage("");
@@ -445,7 +467,7 @@ console.log(response)
                         paddingLeft: 10,
                       }}
                     >
-                      Sarthak Kamra
+                      {item.author}
                     </p>
                   </div>
                   <div
